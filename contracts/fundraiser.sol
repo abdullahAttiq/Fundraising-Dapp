@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.17;
 
-// Import the ERC20 interface for USDT (Tether)
+
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 
@@ -132,6 +132,6 @@ contract Fundraiser {
         require(msg.sender == campaign.creator, "not creator");
     } 
 
-    
+
 
 }
