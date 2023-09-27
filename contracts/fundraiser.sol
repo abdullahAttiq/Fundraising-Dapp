@@ -2,11 +2,13 @@
 pragma solidity ^0.8.17;
 
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 
 contract Fundraiser {
     
+    using SafeERC20 for IERC20;
 
     struct Campaign {
         uint id;
@@ -52,9 +54,9 @@ contract Fundraiser {
         vaildAmount(_amount);
         campaignStatus(_fundraiserId);
         getAllowance(usdtToken,_amount);
-
         
-        IERC20(usdtToken).transferFrom(msg.sender, address(this), _amount);
+        
+        IERC20(usdtToken).safeTransferFrom(msg.sender, address(this), _amount);
         Campaign storage campaign = allCampaigns[_fundraiserId];
 
         campaign.balance += _amount;
@@ -85,7 +87,7 @@ contract Fundraiser {
         require(campaign.balance > 0, "no funds ");
 
         // Transfer the funds to the creator
-        IERC20(usdtToken).transfer(msg.sender, campaign.balance);
+        IERC20(usdtToken).safeTransfer(msg.sender, campaign.balance);
         campaign.balance = 0;
     }
 
@@ -106,7 +108,7 @@ contract Fundraiser {
 
      function vaildAmount(
         uint256 _amount
-    ) internal view {
+    ) internal pure {
             require(
                 _amount > 0 , "invalid amount passed"
 
@@ -132,6 +134,25 @@ contract Fundraiser {
         require(msg.sender == campaign.creator, "not creator");
     } 
 
+     function nonZeroAddress(address _address) private pure {
+        require(_address != address(0), "Invalid address");
+    }
+
+
+    function getContributionAmount(uint256 _fundraiserId, address _funderAddress) external view returns (uint256) {
+       nonZeroAddress(_funderAddress);
+       validId(_fundraiserId);
+
+       Campaign storage campaign = allCampaigns[_fundraiserId];
+       return campaign.contributions[_funderAddress];
+}
+
+function approveAllowance( uint256 _amount) external {
+    IERC20 token = IERC20(usdtToken);
+
+    // Approve the contract to spend the specified amount
+    require( token.approve(address(this), _amount));
+}
 
 
 }
