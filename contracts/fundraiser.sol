@@ -14,8 +14,7 @@ contract Fundraiser {
         uint id;
         address creator;
         uint256 balance;
-        bool canceled;
-        address[] funders; 
+        bool canceled; 
         mapping(address => uint256) contributions;
     }
     
@@ -92,6 +91,9 @@ contract Fundraiser {
     }
 
 
+
+
+
     function getAllowance(
         address  _address,
         uint256 _amount
@@ -147,12 +149,6 @@ contract Fundraiser {
        return campaign.contributions[_funderAddress];
 }
 
-function approveAllowance( uint256 _amount) external {
-    IERC20 token = IERC20(usdtToken);
-
-    // Approve the contract to spend the specified amount
-    require( token.approve(address(this), _amount));
-}
 
 
 }
