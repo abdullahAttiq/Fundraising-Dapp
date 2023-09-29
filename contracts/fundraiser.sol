@@ -15,6 +15,7 @@ contract Fundraiser {
         address creator;
         uint256 balance;
         bool canceled; 
+        uint256 goalAmount;
         mapping(address => uint256) contributions;
     }
     
@@ -32,8 +33,9 @@ contract Fundraiser {
     }
 
    
-    function createFundraiser() external {
-
+    function createFundraiser(uint256 _goalAmount) external {
+       
+       vaildAmount(_goalAmount);
        fundraiserCount++;
 
         Campaign storage newCampaign = allCampaigns[fundraiserCount];
@@ -41,7 +43,7 @@ contract Fundraiser {
         newCampaign.creator = msg.sender;
         newCampaign.balance = 0;
         newCampaign.canceled = false;
-
+        newCampaign.goalAmount=_goalAmount;
         emit fundraiserCreated(fundraiserCount); 
 
     }
@@ -149,6 +151,8 @@ contract Fundraiser {
        return campaign.contributions[_funderAddress];
 }
 
+
+    
 
 
 }
